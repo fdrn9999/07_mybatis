@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinosoft.mapper.ElementTestMapper">
+
+    <resultMap id="categoryResultMap" type="CategoryDTO" autoMapping="false">
+        <id property="categoryCode" column="category_code"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="refCategoryCode" column="ref_category_code"/>
+    </resultMap>
+
+    <resultMap id="menuBaseResultMap" type="MenuDTO" autoMapping="false">
+        <id property="menuCode" column="menu_code"/>
+        <result property="menuName" column="menu_name"/>
+        <result property="menuPrice" column="menu_price"/>
+        <result property="orderableStatus" column="orderable_status"/>
+    </resultMap>
+
+    <resultMap id="menuResultMap" type="MenuDTO" extends="menuBaseResultMap" autoMapping="false">
+        <result property="categoryCode" column="category_code"/>
+    </resultMap>
+
+    <resultMap id="menuAndCategoryResultMap" type="MenuAndCategoryDTO" extends="menuBaseResultMap" autoMapping="false">
+        <association property="category" resultMap="categoryResultMap"/>
+    </resultMap>
+
+    <resultMap id="categoryAndMenuResultMap" type="CategoryAndMenuDTO" extends="categoryResultMap" autoMapping="false">
+        <collection property="menuList" resultMap="menuResultMap"/>
+    </resultMap>
+
+    <select id="selectResultMapTest" resultMap="menuResultMap">
+        SELECT
+              A.MENU_CODE
+            , A.MENU_NAME
+            , A.MENU_PRICE
+            , A.CATEGORY_CODE
+            , A.ORDERABLE_STATUS
+          FROM TBL_MENU A
+         WHERE A.ORDERABLE_STATUS = 'Y'
+    </select>
+
+    <select id="selectResultMapAssociationTest" resultMap="menuAndCategoryResultMap">
+        SELECT
+              A.MENU_CODE
+            , A.MENU_NAME
+            , A.MENU_PRICE
+            , A.CATEGORY_CODE
+            , A.ORDERABLE_STATUS
+            , B.CATEGORY_CODE
+            , B.CATEGORY_NAME
+            , B.REF_CATEGORY_CODE
+          FROM TBL_MENU A
+          JOIN TBL_CATEGORY B ON (A.CATEGORY_CODE = B.CATEGORY_CODE)
+         WHERE A.ORDERABLE_STATUS = 'Y'
+    </select>
+
+    <select id="selectResultMapCollectionTest" resultMap="categoryAndMenuResultMap">
+        SELECT
+              A.CATEGORY_CODE
+            , A.CATEGORY_NAME
+            , A.REF_CATEGORY_CODE
+            , B.MENU_CODE
+            , B.MENU_NAME
+            , B.MENU_PRICE
+            , B.CATEGORY_CODE
+            , B.ORDERABLE_STATUS
+          FROM TBL_CATEGORY A
+          LEFT JOIN TBL_MENU B ON (A.CATEGORY_CODE = B.CATEGORY_CODE)
+         ORDER BY A.CATEGORY_CODE
+    </select>
+
+</mapper>

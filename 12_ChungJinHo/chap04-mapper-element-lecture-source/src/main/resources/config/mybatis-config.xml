@@ -11,7 +11,7 @@
     </settings>
 
     <typeAliases>
-        <typeAlias type="com.jinosoft.common.MenuDTO" alias="MenuDTO"/>
+        <package name="com.jinosoft"/>
 
     </typeAliases>
 
@@ -28,7 +28,6 @@
     </environments>
 
     <mappers>
-        <package name="com.jinosoft.section01.xml"/>
-        <package name="com.jinosoft.section02.provider"/>
+        <package name="com.jinosoft"/>
     </mappers>
 </configuration>
